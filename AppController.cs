@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MVCProject.View;
-using MVCProject.Model;
+using MVCProject.Service;
 
 namespace MVCProject.Controller
 {
@@ -30,80 +30,51 @@ namespace MVCProject.Controller
 
                 switch (userCommand)
                 {
-                    case "select": 
+                    case "show full name":
                         {
-                            if (isEnableEcho)
-                            {
-                                ViaConsole.WriteResponse(AppModel.DBrequest("SELECT * FROM users"), false);
-                                break;
-                            }
-                            else
-                            {
-                                ViaConsole.WriteResponse("Запрос невозможен - эхо сервис выключен", false);
-                                break;
-                            }
+                            UserService service = new UserService();
+
+                            ViaConsole.WriteResponse("Введите ID пользователя", false);
+                            int id = Convert.ToInt32(ViaConsole.ReadCommand().ToLower());
+
+                            service.GetUserById(id);
+                            break;
                         } 
-                    case "insert": 
-                        {
-                            if (isEnableEcho)
-                            {
-                                ViaConsole.WriteResponse("Введите логин:", true);
-                                string login = userCommand = ViaConsole.ReadCommand().ToLower();
-                                ViaConsole.WriteResponse("Введите пароль:", true);
-                                string password = userCommand = ViaConsole.ReadCommand().ToLower();
-                                ViaConsole.WriteResponse("Введите имя:", true);
-                                string firstname = userCommand = ViaConsole.ReadCommand().ToLower();
-                                ViaConsole.WriteResponse("Введите фамилию:", true);
-                                string lastname = userCommand = ViaConsole.ReadCommand().ToLower();
-                                ViaConsole.WriteResponse("Введите страну:", true);
-                                string position = userCommand = ViaConsole.ReadCommand().ToLower();
-                                ViaConsole.WriteResponse(AppModel.DBrequest(string
-                                    .Format("INSERT INTO users ('login', 'password', 'firstname', 'lastname', 'position')" + 
-                                    "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}');", login, password, firstname, lastname, position)), false);
-                                ViaConsole.WriteResponse("Запись успешно добавилась в базу данных", false);
-                                break;
-                            }
-                            else
-                            {
-                                ViaConsole.WriteResponse("Запрос невозможен - эхо сервис выключен", false);
-                                break;
-                            }
-                        } 
+                    //case "insert": 
+                    //    {
+                    //            ViaConsole.WriteResponse("Введите логин:", true);
+                    //            string login = ViaConsole.ReadCommand().ToLower();
+                    //            ViaConsole.WriteResponse("Введите пароль:", true);
+                    //            string password = ViaConsole.ReadCommand().ToLower();
+                    //            ViaConsole.WriteResponse("Введите имя:", true);
+                    //            string firstname = ViaConsole.ReadCommand().ToLower();
+                    //            ViaConsole.WriteResponse("Введите фамилию:", true);
+                    //            string lastname = ViaConsole.ReadCommand().ToLower();
+                    //            ViaConsole.WriteResponse("Введите страну:", true);
+                    //            string position = ViaConsole.ReadCommand().ToLower();
+                    //            ViaConsole.WriteResponse(SqliteDBService.DBrequest(string
+                    //                .Format("INSERT INTO users ('login', 'password', 'firstname', 'lastname', 'position')" + 
+                    //                "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}');", login, password, firstname, lastname, position)), false);
+                    //            ViaConsole.WriteResponse("Запись успешно добавилась в базу данных", false);
+                    //            break;
+                    //    } 
                     case "help": this.HelpCommand(); break;
                     case "disable echo":
                         {
-                            if (isEnableEcho == false)
-                            {
-                                ViaConsole.WriteResponse("Эхо сервис уже выключен.", false);
-                                break;
-                            }
-                            else isEnableEcho = false;
+                            ViaConsole.WriteResponse("Эхо сервис уже выключен.", false);
                             break;
                         }
                     case "enable echo":
                         {
-                            if (isEnableEcho)
-                            {
                                 ViaConsole.WriteResponse("Эхо сервис уже включен.", false);
                                 break;
-                            }
-                            else isEnableEcho = true;
-                            break;
                         }
                     case "print":
                         {
-                            if (isEnableEcho)
-                            {
                                 ViaConsole.WriteResponse("Введите текст, который необходимо напечатать: ", true);
                                 userCommand = ViaConsole.ReadCommand();
                                 ViaConsole.WriteResponse(string.Format("Успешно напечатано: {0}", userCommand), false);
                                 break;
-                            }
-                            else
-                            {
-                                ViaConsole.WriteResponse("Печать невозможна - эхо сервис выключен", false);
-                                break;
-                            }
                         }
                     case "exit": return 0;
                     case "quit":
@@ -137,7 +108,8 @@ namespace MVCProject.Controller
         void HelpCommand()
         {
             ViaConsole.WriteResponse(
-@"exit - выход без подтверждения
+@"show full name user=<userId>
+exit - выход без подтверждения
 quit- выход с подтверждением
 print - напечатать следующий текст
 enable echo - включить эхо сервис
@@ -145,6 +117,5 @@ disable echo - выключить эхо сервис
 select - прочитать последнюю запись в базе данных в таблице Users
 insert - добавить новую запись в таблицу Users", false);        
         }
-
     }
 }
