@@ -40,7 +40,7 @@ namespace MvcProject.Service
             catch (Exception exception)
             {
                 SqliteDBService.CompleteConnection();
-                Console.WriteLine(exception.Message);
+                //Console.WriteLine(exception.Message);   //удалить
 
                 return null;
             }
